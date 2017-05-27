@@ -1,0 +1,179 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery-3.2.1.js" integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE=" crossorigin="anonymous"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        
+            .board {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                margin-top: -350px;
+                margin-left: -350px;
+                width: 700px;
+                height: 700px;
+                border: 1.5px solid rgba(66, 66, 66, 1);
+                background-color: rgba(255, 250, 235, 1);
+            }
+            
+            .row {
+                display: flex;
+            }
+            
+            .grid {
+                width: 6.66667%;
+                height: 6.66667%;
+            }
+            
+            .grid::before, .grid::after {
+                content: ' ';
+                position: absolute;
+                background-color: rgba(100, 100, 100, 1);
+            }
+            
+            .grid::before {
+                width: 1px;
+                height: inherit;
+                margin-left: calc(3.33% - 0.5px);
+            }
+            
+            .grid::after {
+                height: 1px;
+                width: inherit;
+                margin-top: calc(3.33% - 0.5px);
+            }
+            
+            .aux {
+                z-index: -1;
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background-color: rgba(66, 66, 66, 1);
+                margin-top: calc(3.33% - 3px);
+                margin-left: calc(3.33% - 3px);
+            }
+            
+            .chess.hover {
+                opacity: 0.8;
+            }
+            
+            .chess {
+                position: absolute;
+                z-index: 1;
+                margin: 2px;
+                width: calc(6.6666667% - 4px);
+                height: calc(6.6666667% - 4px);
+                border-radius: 50%;
+            }
+            
+            .black-chess {
+                background-color: rgba(100, 100, 100, 1);
+            }
+            
+            .white-chess {
+                width: calc(6.666667% - 6px);
+                height: calc(6.666667% - 6px);
+                border: 1px solid rgba(100, 100, 100, 1);
+                background-color: rgba(255, 255, 255, 1);
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <div class="board"></div>
+        </main>
+        <nav>
+            
+        </nav>
+        <script>
+            
+            var WIDTH = 15;
+            var HEIGHT = 15;
+            var BLACK = true;
+            var STEP = [];
+            
+            function initBoard() {
+                var html = "";
+                for (var j = 0; j < HEIGHT; j++) {
+                    html += "<div class=\"row\">";
+                    for (var i = 0; i < WIDTH; i++) {
+                        html += "<div class=\"grid\" data-x=\"" + i + "\" data-y=\"" + j + "\">" + ((i + 1) % 4 == 0 && (j + 1) % 4 == 0 ? "<div class=\"aux\"></div>" : "") + "</div>";
+                    }
+                    html += "</div>";
+                }
+                $(".board").html(html);
+            }
+            
+            function loadHover() {
+                $(".grid").hover(function () {
+                    var x = $(this).attr("data-x"), y = $(this).attr("data-y");
+                    if (!$(this).hasClass("occupied") && !(BLACK && isKinju(x, y))) {
+                        $(this).append("<div class=\"chess " + (BLACK ? "black" : "white") + "-chess hover\"></div>");
+                    }
+                }, function () {
+                    $(this).children(".hover").remove();
+                });
+            }
+            
+            function loadClick() {
+                $(".grid").click(function () {
+                    var x = $(this).attr("data-x"), y = $(this).attr("data-y");
+                    if (!$(this).hasClass("occupied") && !(BLACK && isKinju(x, y))) {
+                        $(this).append("<div class=\"chess " + (BLACK ? "black" : "white") + "-chess\"></div>");
+                        $(this).addClass("occupied");
+                        push(x, y);
+                        BLACK = !BLACK;
+                    }
+                });
+            }
+            
+            function isKinju(i, j) {
+                return isKinju33(i, j) || isKinju44(i, j) || isKinjuLong(i, j);
+            }
+            
+            function isKinju33(i, j) {
+                
+            }
+            
+            function isKinju44(i, j) {
+                
+            }
+            
+            function isKinjuLong(i, j) {
+                
+            }
+            
+            function push(i, j) {
+                STEP.push({
+                    x: i,
+                    y: j
+                });
+            }
+            
+            function pop() {
+                
+                // First check if there is a step
+                if (STEP.length == 0) {
+                    return;
+                }
+                
+                // Then revert
+                BLACK = !BLACK;
+                var step = STEP.pop();
+                get(step.x, step.y).children(".chess").remove();
+            }
+            
+            function get(i, j) {
+                return $(".row").eq(j).children(".grid").eq(i);
+            }
+            
+            initBoard();
+            loadHover();
+            loadClick();
+        </script>
+    </body>
+</html>
